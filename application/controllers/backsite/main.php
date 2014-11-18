@@ -7,7 +7,7 @@ class Main extends CI_Controller {
 		parent::__construct();
 		$this->load->model(array('admin_model', 'main_model'));
 
-		if(!$this->admin_model->checkSession())redirect('backsite/login');
+		if(!$this->admin_model->checkSession() OR !$this->admin_model->checkIp())redirect('backsite/login');
 	}
 
 	public function index()

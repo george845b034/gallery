@@ -54,11 +54,24 @@ class admin_model extends CI_Model
 	 */
 	public function checkSession()
 	{
-		//確認ip位子
-		if( (WEB_IP == $this->input->ip_address() && $this->session->userdata('is_login') == 1) OR $this->input->ip_address() == '127.0.0.1' ){
+		if( $this->session->userdata('is_login') == 1 ){
 			return true;
 		}else{
 			return false;
 		}
+	}
+
+	/**
+	 * 確認ip位子
+	 * @return boolean
+	 */
+	public function checkIp()
+	{
+		//確認ip位子
+		if( WEB_IP == $this->input->ip_address() OR $this->input->ip_address() == '127.0.0.1' ){
+			return true;
+		}else{
+			return false;
+		}	
 	}
 }
