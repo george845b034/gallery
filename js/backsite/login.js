@@ -99,7 +99,7 @@ app.controller('loginController', ['$scope', '$window', 'dbService', function($s
             }else{
                 //判斷帳密
                 dbService.getAdmin($scope.account, $scope.password).then(function( result ){
-                    
+
                     if(result.data != 1)
                     {
                         errorShow();
@@ -127,7 +127,7 @@ app.controller('loginController', ['$scope', '$window', 'dbService', function($s
      */
     var captchaReload = function(){
         dbService.captchaReload().then(function( result ){
-            $('img:last').replaceWith(result.data);
+            $('img:last').attr('src', result.data.image_src);
         });
     }
 

@@ -8,7 +8,7 @@ class Login extends CI_Controller {
 		$this->load->helper(array('captcha'));
 		$this->config->set_item('language', 'zh-tw');
 		$this->load->model(array('admin_model'));
-		$this->load->library('form_validation');
+		$this->load->library(array('form_validation', 'captcha'));
 	}
 
 	public function index()
@@ -21,7 +21,7 @@ class Login extends CI_Controller {
 				break;
 			//取得驗証
 			case 2:
-				echo ($this->input->post('captcha') == $this->session->userdata('captcha'))?true:false;
+				echo ($this->input->post('captcha') == $this->session->userdata('captcha_info')['code'])?true:false;
 				break;
 			//驗証帳密
 			case 3:
@@ -29,7 +29,7 @@ class Login extends CI_Controller {
 				break;
 			//取得驗証圖片
 			case 4:
-				echo $this->captcha_img();
+				echo json_encode($this->captcha_create());
 				break;
 			default:
 				$this->view();
@@ -41,7 +41,8 @@ class Login extends CI_Controller {
 	{
 		$data = array();
 		//驗証圖形
-		$data['captcha'] = $this->captcha_img();
+		$data['captcha'] = $this->captcha_create();
+
 		//csrf token
 		$data['token'] = md5(uniqid());
 		$this->session->set_userdata('csrf_token', $data['token']);
@@ -52,78 +53,31 @@ class Login extends CI_Controller {
 	}
 
 	/**
-	 * 檢驗輸入欄位
+	 * 驗証圖形產生
 	 * @return void
 	 */
-	public function login_validation()
+	private function captcha_create()
 	{
-		$this->form_validation->set_rules('account', 'Account', 'required');
-		$this->form_validation->set_rules('password', 'Password', 'required');
-		$this->form_validation->set_rules('captcha', 'Captcha', 'required|callback_captcha_check');
+		$data = $this->captcha->main(array(
+			'code' => '',
+			'min_length' => 5,
+			'max_length' => 5,
+			'png_backgrounds' => array(base_url('/images/captcha/captcha_bg.png')),
+			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
+			'characters' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+			'min_font_size' => 22,
+			'max_font_size' => 28,
+			'color' => '#000',
+			'angle_min' => 0,
+			'angle_max' => 15,
+			'shadow' => true,
+			'shadow_color' => '#CCC',
+			'shadow_offset_x' => -2,
+			'shadow_offset_y' => 2
+		));
+		
+		$this->session->set_userdata('captcha_info', $data);
 
-		if($this->input->post('token') == $this->session->userdata('csrf_token'))
-		{
-			if ($this->form_validation->run() == FALSE)
-			{
-				$this->index();
-			}
-			else
-			{
-				if($this->admin_model->checkAdmin($this->input->post('account'), $this->input->post('password')) == 1)
-				{
-					redirect('./backsite/main', 'refresh');
-					exit();
-				}
-
-				$this->form_validation->set_rules('account_check');
-				$this->form_validation->run();
-				$this->index();
-			}
-		}else{
-			show_404();
-		}
+		return $data;
 	}
-
-	/**
-	 * 驗証數字
-	 * @param  string $str
-	 * @return boolean
-	 */
-	public function captcha_check($str)
-	{
-		if ($str != $this->session->userdata('captcha'))
-		{
-			$this->form_validation->set_rules('captcha_check');
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;
-		}
-	}
-
-	/**
-	 * 驗証器
-	 * @return string html img
-	 */
-	private function captcha_img()
-    {
-        $pool = '0123456789';
-        $word = '';
-        for ($i = 0; $i < 4; $i++){
-            $word .= substr($pool, mt_rand(0, strlen($pool) -1), 1);
-        }
-        $this->session->set_userdata('captcha', $word);
-        $vals = array(
-            'word'  => $word,
-            'img_path'  => './captcha/',
-            'img_url'  => base_url() . '/captcha/',
-		    'img_width'	=> 100,
-		    'img_height' => 30,
-            'expiration' => 1200
-            );
-        $cap = create_captcha($vals);
-        
-        return $cap['image'];
-    }
 }

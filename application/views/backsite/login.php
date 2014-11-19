@@ -32,7 +32,7 @@
 				   		<input type="text" ng-model="account" placeholder="User name" class="input-field" autocomplete="off" autofocus required>
 				   		<input type="password" ng-model="password" placeholder="Password" class="input-field" required>
 				  		<input type="text" ng-model="captcha" placeholder="input captcha" class="input-field" id="captcha" autocomplete="off" required/>
-				  		<?php echo $captcha;?>
+				  		<img src="<?php echo $captcha['image_src'];?>" alt="CAPTCHA security code" width="100px" height="30px" />
 				  		<div class="btn btn-danger center-block centerLogin hide"><span class="glyphicon glyphicon-remove"></span> <span id="errMessage">帳號或密碼輸入錯誤!</span></div>
 				   		<button type="submit" class="btn btn-login">Login</button> 
 
