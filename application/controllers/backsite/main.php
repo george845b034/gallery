@@ -22,10 +22,11 @@ class Main extends CI_Controller {
 	private function view()
 	{
 		$data['menu'] = $this->main_model->getMenu();
+		$data['page_title'] = 'Main';
 
-		$this->load->view('backsite/header');
+		$this->load->view('backsite/header', $data);
 		$this->load->view('backsite/navigation', $data);
-		$this->load->view('backsite/main');
+		$this->load->view('backsite/main', $data);
 		$this->load->view('backsite/footer');	
 	}
 

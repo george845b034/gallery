@@ -1,3 +1,4 @@
+<?php $currentPart = end((explode('/', rtrim(current_url(), '/'))));?>
 <section class="vbox">
     <!-- navigation bar -->
     <header class="bg-dark dk header navbar navbar-fixed-top-xs">
@@ -38,8 +39,8 @@
                             <!-- nav -->
                             <nav class="nav-primary hidden-xs">
                                 <ul class="nav">
-                                    <li  class="active">
-                                        <a href="index.html"   class="active">
+                                    <li class="<?php echo ($currentPart == 'main')?'active':'';?>">
+                                        <a href="main">
                                             <i class="fa fa-dashboard icon">
                                                 <b class="bg-danger"></b>
                                             </i>
@@ -58,10 +59,12 @@
 
                                             //權限
                                             if( count($subMenu) OR in_array($value['m_url'], $permission) ){
+                                                
+                                                $currentActive = (strpos($currentPart, $value['m_url']) === false)?'':'active';
 
                                                 echo '
-                                                    <li >
-                                                        <a href="'. $value['m_url'] .'"  >
+                                                    <li class="'. $currentActive . '">
+                                                        <a href="'. $value['m_url'] .'">
                                                             <i class="fa '. $value['m_icon'] .' icon">
                                                                 <b class="'. $value['m_color'] .'"></b>
                                                             </i>

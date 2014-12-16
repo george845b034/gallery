@@ -18,7 +18,7 @@ class admin_model extends CI_Model
 		$tempPermissionArray = array();
 
 		$this->db->select('*');
-		$this->db->from('admin');
+		$this->db->from('`backsite`.admin');
 		$this->db->where('a_account', $inAccount);
 		$this->db->where('a_password', md5($inPassword));
 		$this->db->where('a_flag', 1);
@@ -29,10 +29,11 @@ class admin_model extends CI_Model
 		{
 			$this->session->set_userdata('is_login', 1);
 			$this->session->set_userdata('username', $result['a_username']);
+			$this->session->set_userdata('user_id', $result['a_id']);
 
 			//權限
 			$this->db->select('*');
-			$this->db->from('admin_permission');
+			$this->db->from('`backsite`.admin_permission');
 			$this->db->where('a_id', $result['a_id']);
 			$query = $this->db->get();
 			$permission = $query->result_array();
@@ -49,13 +50,36 @@ class admin_model extends CI_Model
 	}
 
 	/**
+	 * 確認權限
+	 * @return boolean reuslt
+	 */
+	private function checkPromission()
+	{
+		$temp = false;
+		$this->db->select('*');
+		$this->db->from('`backsite`.admin_permission');
+		$this->db->where('a_id', $this->session->userdata('user_id'));
+		$query = $this->db->get();
+		$permission = $query->result_array();
+
+		$currentPart = end((explode('/', rtrim(current_url(), '/'))));
+		foreach ($permission as $key => $value) {
+
+			if(strpos($currentPart, $value['ap_name']) !== false)$temp = true;
+		}
+
+		return $temp;
+	}
+
+	/**
 	 * 確認是否有登入
 	 * @return boolean
 	 */
 	public function checkSession()
 	{
 		if( $this->session->userdata('is_login') == 1 ){
-			return true;
+			//確認權限
+			return $this->checkPromission();
 		}else{
 			return false;
 		}

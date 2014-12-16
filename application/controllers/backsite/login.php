@@ -42,12 +42,13 @@ class Login extends CI_Controller {
 		$data = array();
 		//驗証圖形
 		$data['captcha'] = $this->captcha_create();
+		$data['page_title'] = 'Login';
 
 		//csrf token
 		$data['token'] = md5(uniqid());
 		$this->session->set_userdata('csrf_token', $data['token']);
 
-		$this->load->view('backsite/header');
+		$this->load->view('backsite/header', $data);
 		$this->load->view('backsite/login', $data);
 		$this->load->view('backsite/footer');	
 	}
@@ -63,7 +64,7 @@ class Login extends CI_Controller {
 			'min_length' => 5,
 			'max_length' => 5,
 			'png_backgrounds' => array(base_url('/images/captcha/captcha_bg.png')),
-			'fonts' => array(FCPATH.'/images/captcha/times_new_yorker.ttf'),
+			'fonts' => array(FCPATH.'images/captcha/times_new_yorker.ttf'),
 			'characters' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
 			'min_font_size' => 22,
 			'max_font_size' => 28,

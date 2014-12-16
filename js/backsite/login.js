@@ -110,6 +110,7 @@ app.controller('loginController', ['$scope', '$window', 'dbService', function($s
                             if(result.data != 1)
                             {
                                 errorShow('Token Error!');
+                                location.reload();
                             }else{
                                 //redirect
                                 $window.location.href = './main';
@@ -157,5 +158,6 @@ app.controller('loginController', ['$scope', '$window', 'dbService', function($s
         $scope.password = '';
         $scope.captcha = '';
         $scope.$apply();
+        $('form input:not(":hidden"):first').focus();
     }
 }]);

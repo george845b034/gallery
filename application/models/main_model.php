@@ -14,7 +14,7 @@ class main_model extends CI_Model
 	public function getMenu()
 	{
 		$this->db->select('*');
-		$this->db->from('menu');
+		$this->db->from('`backsite`.menu');
 		$query = $this->db->get();
 		
 		return $query->result_array();
@@ -28,7 +28,7 @@ class main_model extends CI_Model
 	public  function getSubMenu($inId)
 	{
 		$this->db->select('*');
-		$this->db->from('submenu');
+		$this->db->from('`backsite`.submenu');
 		$this->db->where('m_id', $inId);
 		$query = $this->db->get();
 		
