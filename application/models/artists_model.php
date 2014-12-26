@@ -49,4 +49,34 @@ class artists_model extends CI_Model
         $result = $query->result_array();
         return $result;
     }
+
+    /**
+     *  取得全部的藝術家
+     * @return array result
+     */
+    public function getDataAll()
+    {
+        $this->db->select('*');
+        $this->db->from('`gallery`.artists');
+        $this->db->order_by('ar_update_time', 'DESC');
+        $query = $this->db->get();
+        
+        $result = $query->result_array();
+        return $result;   
+    }
+
+    /**
+     *  取得藝術家ｂｙ　ｉｄ
+     * @return array result
+     */
+    public function getDataById($inId)
+    {
+        $this->db->select('*');
+        $this->db->from('`gallery`.artists');
+        $this->db->where('ar_id', $inId);
+        $query = $this->db->get();
+        
+        $result = $query->row_array();
+        return $result;   
+    }
 }
