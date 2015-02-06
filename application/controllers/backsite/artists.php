@@ -19,8 +19,14 @@ class Artists extends CI_Controller {
 	public function index()
 	{
 		switch ($this->input->post('type')) {
+			//刪除
 			case 1:
 				echo json_encode($this->artists_model->deleteData($this->input->post('id')));
+				break;
+			//排序
+			case 2:
+				$sortValue = ($this->input->post('category') == 'up')?-1:1;
+				echo json_encode($this->artists_model->updateDataSort($this->input->post('id'), $sortValue));
 				break;
 			default:
 				$this->view();

@@ -10,9 +10,12 @@ class About extends CI_Controller {
 
 	public function index()
 	{
+		$this->about_model->setLanguage($this->input->get('lang', true));
 		$data['aboutData'] = $this->about_model->getData();
+		$data['language'] = $this->about_model->checkLanguage();
+		$data['headerData'] = $this->about_model->getHeaderData();
 		
-		$this->load->view('header');
+		$this->load->view('header', $data);
 		$this->load->view('about', $data);
 		$this->load->view('footer');
 	}

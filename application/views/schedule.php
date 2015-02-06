@@ -1,47 +1,38 @@
     <div class="contact">
         <div class="con_left">
             <span class="title_con">
-                <h1>Adel Abdessemed</h1>
+                <h1><?php echo ($id)?$artistsData[0]['ar_'. $language .'_name']:'Exhibition Schedule';?></h1>
                 <p>Biography</p>
             </span> 
             <div class="exhi">
                 <div class="tx_cn">
-                    <p>Group Show<br>
-                    Prima Materia<br>
-                    Punta della Dogana, Venice<br>
-                    May 30, 2013 - December 31, 2014<br><img src="images/theme/line2.png"></p>
-                    <p>Group Show<br>
-                    Prima Materia<br>
-                    Punta della Dogana, Venice<br>
-                    May 30, 2013 - December 31, 2014<br><img src="images/theme/line2.png"></p>
-                    <p>Group Show<br>
-                    Prima Materia<br>
-                    Punta della Dogana, Venice<br>
-                    May 30, 2013 - December 31, 2014<br><img src="images/theme/line2.png"></p>
-                    <p>Group Show<br>
-                    Prima Materia<br>
-                    Punta della Dogana, Venice<br>
-                    May 30, 2013 - December 31, 2014<br><img src="images/theme/line2.png"></p>
-                    <p>Group Show<br>
-                    Prima Materia<br>
-                    Punta della Dogana, Venice<br>
-                    May 30, 2013 - December 31, 2014<br><img src="images/theme/line2.png"></p>
-                    <p>Group Show<br>
-                    Prima Materia<br>
-                    Punta della Dogana, Venice<br>
-                    May 30, 2013 - December 31, 2014<br></p>
+                    <?php
+                        foreach ($artistsData as $key => $value) {
+                            echo '
+                                <p>
+                                    '. $value['e_name'] .'<br>
+                                    '. nl2br($value['e_'. $language .'_content']) .'<br>
+                                    '. $value['e_start_date'] .'~'. $value['e_end_date'] .'<br>
+                                    '. $value['e_address'] .'<br>
+                                    <img src="images/theme/line2.png">
+                                </p>
+                            ';
+                        }
+                    ?>
                 </div>
             </div> 
         </div>
         <div class="con_right">
             <div class="sebar">
-                <select class="form-control select select-primary select2-offscreen" data-toggle="select" tabindex="-1" title="">
-                    <option value="0">Choose hero</option>
-                    <option value="1">Spider Man</option>
-                    <option value="2">Wolverine</option>
-                    <option value="3">Captain America</option>
-                    <option value="4" selected="">X-Men</option>
-                    <option value="5">Crocodile</option>
+                <select class="form-control select select-primary select2-offscreen select-schedule" data-toggle="select" tabindex="-1" title="">
+                    <?php
+                        foreach ($artistsList as $key => $value) {
+
+                            $selected = ($id && $artistsData[0]['ar_id'] == $value['ar_id'])?'selected="selected"':'';
+                            if(!$id)echo '<option value="0">select</option>';
+                            echo '<option value="'. $value['ar_id'] .'" '. $selected .'>'. $value['ar_'. $language .'_name'] .'</option>';
+                        }
+                    ?>
                 </select>
             </div>
             <nav>
@@ -50,6 +41,6 @@
                     <li><a href="schedule">Exhibition Schedule/展覽日程</a></li>
                 </ul>
             </nav>
-        </div>  
-        <div class="footer_con"></div>
+        </div>
     </div>
+    <div class="footer_con"></div>

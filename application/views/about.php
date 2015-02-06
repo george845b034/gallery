@@ -9,7 +9,7 @@
                     <div class="tx_cn">
                         <br/>
                         <p>
-                            <?php echo $aboutData['ab_'. $this->session->userdata('language') .'_introduction'];?>
+                            <?php echo nl2br($aboutData['ab_'. $language .'_introduction']);?>
                         </p>
                     </div>
                 </div>

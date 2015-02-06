@@ -58,4 +58,55 @@ class about_model extends CI_Model
         $result = $query->row_array();
         return $result;
     }
+
+    /**
+     * 取得表頭的資料
+     * @return array result
+     */
+    public function getHeaderData()
+    {
+        $this->db->select('*');
+        $this->db->from('`gallery`.header');
+        $this->db->where('h_id', 1);
+        $query = $this->db->get();
+        
+        $result = $query->row_array();
+        return $result;
+    }
+
+
+    /**
+     * 設定語言
+     * @param void result
+     */
+    public function setLanguage($inLan)
+    {
+        switch ($inLan) {
+            case 'en':
+                setcookie('lang', 'en', 0, "/");
+                $_COOKIE['lang'] = 'en';
+                break;
+            default:
+                setcookie('lang', 'tw', 0, "/");
+                $_COOKIE['lang'] = 'tw';
+                break;
+        }
+    }
+
+    /**
+     * 檢查語言
+     * @return string return
+     */
+    public function checkLanguage()
+    {
+        $lang = 'tw';
+        if(!isset($_COOKIE['lang'])) {
+            setcookie('lang', 'tw', 0, "/");
+        } else {
+            $lang = $_COOKIE['lang'];
+        }
+
+        return $lang;
+    }
+
 }

@@ -7,12 +7,12 @@ class Publications extends CI_Controller {
 		parent::__construct();
 		$this->load->model(array('publications_model'));
 
-		$this->session->set_userdata('language', 'tw');
 	}
 
 	public function index()
 	{
 		$data['publicationsData'] = $this->publications_model->getDataAll();
+		$data['language'] = ($this->session->userdata('language'))?$this->session->userdata('language'):'tw';
 
 		$this->load->view('header');
 		$this->load->view('publications', $data);

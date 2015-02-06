@@ -92,7 +92,7 @@ class admin_model extends CI_Model
 	public function checkIp()
 	{
 		//確認ip位子
-		if( WEB_IP == $this->input->ip_address() OR $this->input->ip_address() == '127.0.0.1' ){
+		if( WEB_IP == $this->input->ip_address() OR $this->input->ip_address() == '127.0.0.1'  OR $this->input->ip_address() == INSIDE_IP ){
 			return true;
 		}else{
 			return false;

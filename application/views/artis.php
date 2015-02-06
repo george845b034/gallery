@@ -10,7 +10,7 @@
                         <?php
                             $lenth = (count($artistsData) < 8)?count($artistsData):8;
                             for ($i=0; $i < $lenth; $i++) { 
-                                echo '<li style="text-align: left;"><img src="uploads/images/artists/30.png" width="30" height="30"><a href="./artis_detail?id='. $artistsData[$i]['ar_id'] .'">'. $artistsData[$i]['ar_'. $this->session->userdata('language') .'_name'] .'</a></li>';
+                                echo '<li style="text-align: left;"><img src="uploads/images/artists/30.png"><a href="./artis_detail?id='. $artistsData[$i]['ar_id'] .'">'. $artistsData[$i]['ar_'. $language .'_name'] .'</a></li>';
                             }
                         ?>
                     </ul>
@@ -20,7 +20,7 @@
                         <?php
                             $lenth = (count($artistsData) < 16)?count($artistsData):16;
                             for ($i=8; $i < $lenth; $i++) { 
-                                echo '<li style="text-align: left;" data-content="'. $artistsData[$i]['ar_'. $this->session->userdata('language') .'_content'] .'"><img src="uploads/images/artists/30.png" width="30" height="30"><a href="./artis_detail?id='. $artistsData[$i]['ar_id'] .'">'. $artistsData[$i]['ar_'. $this->session->userdata('language') .'_name'] .'</a></li>';
+                                echo '<li style="text-align: left;" data-content="'. $artistsData[$i]['ar_'. $language .'_content'] .'"><img src="uploads/images/artists/30.png"><a href="./artis_detail?id='. $artistsData[$i]['ar_id'] .'">'. $artistsData[$i]['ar_'. $language .'_name'] .'</a></li>';
                             }
                         ?>
                     </ul>
@@ -30,7 +30,7 @@
                         <?php
                             $lenth = (count($artistsData) < 24)?count($artistsData):24;
                             for ($i=16; $i < $lenth; $i++) { 
-                                echo '<li style="text-align: left;" data-content="'. $artistsData[$i]['ar_'. $this->session->userdata('language') .'_content'] .'"><img src="uploads/images/artists/30.png" width="30" height="30"><a href="./artis_detail?id='. $artistsData[$i]['ar_id'] .'">'. $artistsData[$i]['ar_'. $this->session->userdata('language') .'_name'] .'</a></li>';
+                                echo '<li style="text-align: left;" data-content="'. $artistsData[$i]['ar_'. $language .'_content'] .'"><img src="uploads/images/artists/30.png"><a href="./artis_detail?id='. $artistsData[$i]['ar_id'] .'">'. $artistsData[$i]['ar_'. $language .'_name'] .'</a></li>';
                             }
                         ?>
                     </ul>

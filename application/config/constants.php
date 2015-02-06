@@ -39,6 +39,7 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 //鎖定ip
 define('WEB_IP', '113.196.52.227');
+define('INSIDE_IP', '10.185.253.35');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

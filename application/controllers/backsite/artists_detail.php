@@ -7,6 +7,7 @@ class Artists_detail extends CI_Controller {
 		parent::__construct();
 		$this->load->model(array('main_model', 'admin_model', 'artists_detail_model'));
 		$this->load->helper(array('file', 'directory'));
+		$this->load->library('upload');
 
 		if(!$this->admin_model->checkSession() OR !$this->admin_model->checkIp())redirect('backsite/login');
 	}
@@ -20,14 +21,18 @@ class Artists_detail extends CI_Controller {
 				if($this->input->post('token') == $this->session->userdata('csrf_token') && $this->input->post('token'))
 				{
 					//上傳圖片
-					$uploadArName = $this->uploadConfig('jpg|png', 'ar_image');
-					$uploadArCvName = $this->uploadConfig('jpg|png', 'ar_cv_image');
+					$uploadArName = $this->uploadConfig('jpg|png', 'ar_image', 32, 32, 'artists');
+					$uploadArCvName = $this->uploadConfig('jpg|png', 'ar_cv_image', 600, 392, 'artists');
+					$arrayName = $this->uploadConfig('jpg|png', 'w_image', 600, 392, 'works');
+					$pdfName = $this->uploadPdf('ar_pdf');
 					
 					$inputData = $this->input->post(NULL, TRUE);
 					$inputData['ar_image'] = $uploadArName;
 					$inputData['ar_cv_image'] = $uploadArCvName;
+					$inputData['ar_pdf'] = $pdfName;
 
 					echo json_encode($this->artists_detail_model->add($inputData));	
+					if(is_array($arrayName))$this->artists_detail_model->addWorks($this->db->insert_id(), $arrayName, $this->input->post('w_description'));
 				}else{
 					$returnArray['status'] = "FAIL";
             		$returnArray['msg'] = "Token Fail";
@@ -43,13 +48,21 @@ class Artists_detail extends CI_Controller {
 				if($this->input->post('token') == $this->session->userdata('csrf_token') && $this->input->post('token'))
 				{
 					//上傳圖片
-					$uploadArName = $this->uploadConfig('jpg|png', 'ar_image');
-					$uploadArCvName = $this->uploadConfig('jpg|png', 'ar_cv_image');
+					$uploadArName = $this->uploadConfig('jpg|png', 'ar_image', 32, 32, 'artists');
+					$uploadArCvName = $this->uploadConfig('jpg|png', 'ar_cv_image', 600, 392, 'artists');
+					$arrayName = $this->uploadConfig('jpg|png', 'w_image', 600, 392, 'works');
+					$pdfName = $this->uploadPdf('ar_pdf');
 					
 					$inputData = $this->input->post(NULL, TRUE);
 					$inputData['ar_image'] = $uploadArName;
 					$inputData['ar_cv_image'] = $uploadArCvName;
-
+					$inputData['ar_pdf'] = $pdfName;
+					if($inputData['ar_image'] == '')unset($inputData['ar_image']);
+					if($inputData['ar_cv_image'] == '')unset($inputData['ar_cv_image']);
+					if($inputData['ar_pdf'] == '')unset($inputData['ar_pdf']);
+					
+					$this->artists_detail_model->updateWorks($this->input->post('w_id_hidden'), $this->input->post('w_description'));
+					if(is_array($arrayName))$this->artists_detail_model->addWorks($inputData['ar_id'], $arrayName, $this->input->post('w_description'));
 					echo json_encode($this->artists_detail_model->update($inputData));	
 				}else{
 					$returnArray['status'] = "FAIL";
@@ -59,6 +72,14 @@ class Artists_detail extends CI_Controller {
 
 				$this->session->unset_userdata('csrf_token');
 				$this->deleteImages();
+				break;
+			//刪除works
+			case 3:
+				if(!$this->input->post('id'))return;
+
+				$returnArray = $this->artists_detail_model->getWorksDataByWId($this->input->post('id'));
+				$this->deleteWorksImagesByName($returnArray['w_image']);
+				echo json_encode($this->artists_detail_model->deleteWorksData($this->input->post('id')));
 				break;
 			default:
 				$this->view();
@@ -70,6 +91,7 @@ class Artists_detail extends CI_Controller {
 	{
 		$getId = $this->input->get('id', TRUE);
 		$data['result'] = $this->artists_detail_model->getData($getId);
+		$data['resultWorks'] = $this->artists_detail_model->getWorksDataByArId($getId);
 		$name = ($data['result'])?' - <b>' . $data['result']['ar_tw_name'] . '</b>':'';
 		$title = ($data['result'])?'':'新增';
 		$data['breadName'] = ($name == '')?$title:$name;
@@ -88,33 +110,133 @@ class Artists_detail extends CI_Controller {
 	}
 
 	/**
+	 * 上傳pdf檔
+	 * @param  string $inName 檔案名稱
+	 * @return string result
+	 */
+	private function uploadPdf($inName)
+	{
+		$newName = '';
+		$config = array();
+		$config['upload_path'] = './uploads/pdf';
+        $config['allowed_types'] = 'pdf';
+        $config['overwrite'] = true;
+
+        //判斷是否有目錄及新增目錄
+    	if(!is_dir('./uploads/pdf'))
+		{
+			mkdir('./uploads/pdf', 0775);
+			chmod('./uploads/pdf', 0775);
+		}
+
+		if(isset($_FILES[$inName]))
+		{
+			//處理中文 WINNT 和 Linux的編碼
+			if(PHP_OS == 'WINNT')$_FILES[$inName]["name"] = mb_convert_encoding($_FILES[$inName]["name"],"big5","utf8");
+
+			$this->upload->initialize($config);
+			if ( ! $this->upload->do_multi_upload($inName))
+			{
+				$error = array('error' => $this->upload->display_errors());
+
+				$result['message'] = $error;
+				$result['status'] = 'FAIL';
+			}
+
+			$uploadData = $this->upload->data();
+			//處理中文
+			$newName = (PHP_OS == 'WINNT')?mb_convert_encoding($uploadData["file_name"],"utf8","big5"):$uploadData["file_name"];
+		}
+
+		return $newName;
+	}
+	
+	/**
 	 * 上傳檔案
 	 * @param  string $inType 上傳的型態
 	 * @param  string $inName 變數名稱
+	 * @param  int $inWidth 縮圖寬度
+	 * @param  int $inHeight 縮圖高度
+	 * @param  string $inFolder 資料夾名稱
 	 * @return array result
 	 */
-	private function uploadConfig($inType, $inName)
+	private function uploadConfig($inType, $inName, $inWidth, $inHeight, $inFolder)
 	{
 		/*****Begin 處理目錄名稱 *****/
 		$tempArray = array();
-		$config['upload_path'] = './uploads/images/artists';
+		$config = array();
+		$data = array();
+		$config['upload_path'] = './uploads/images/' . $inFolder;
         $config['allowed_types'] = $inType;
         $config['overwrite'] = true;
 
         //判斷是否有目錄及新增目錄
-    	if(!is_dir('./uploads/images/artists'))
+    	if(!is_dir('./uploads/images/' . $inFolder))
 		{
-			mkdir('./uploads/images/artists', 0775);
-			chmod('./uploads/images/artists', 0775);
+			mkdir('./uploads/images/' . $inFolder, 0775);
+			chmod('./uploads/images/' . $inFolder, 0775);
 		}
         /*****End 處理目錄名稱 *****/
 
 		if(isset($_FILES[$inName]))
 		{
-			$this->load->library('upload', $config);
-			$this->upload->do_multi_upload($inName);
-			
-			return $_FILES[$inName]['name'];
+			$this->upload->initialize($config);
+			if ( ! $this->upload->do_multi_upload($inName))
+			{
+				$error = array('error' => $this->upload->display_errors());
+
+				$result['message'] = $error;
+				$result['status'] = 'FAIL';
+			}
+			else
+			{
+				$this->upload->initialize($config);
+				$data = $this->upload->get_multi_upload_data();
+				$this->load->library('image_lib');
+				//單一縮圖
+				if( count($data) == 0 )
+				{
+					$config['image_library'] = 'gd2';
+					$config['source_image']	= $_FILES[$inName]['tmp_name'];
+					$config['new_image']	= $config['upload_path'] . '/thumb/'. $_FILES[$inName]['name'];
+					$config['create_thumb'] = FALSE;
+					$config['maintain_ratio'] = TRUE;
+					$config['width']	 = $inWidth;
+					$config['height']	= $inHeight;
+					
+					$this->image_lib->initialize($config);
+					if ( ! $this->image_lib->resize())
+					{
+						echo $this->image_lib->display_errors();
+					}
+				}
+
+				foreach ($data as $key => $value) {
+					//縮圖
+					$config['image_library'] = 'gd2';
+					$config['source_image']	= $value['full_path'];
+					$config['new_image']	= $value['file_path']. 'thumb/'. $value['file_name'];
+					$config['create_thumb'] = FALSE;
+					$config['maintain_ratio'] = TRUE;
+					$config['width']	 = $inWidth;
+					$config['height']	= $inHeight;
+					 
+					$this->image_lib->initialize($config);
+					if ( ! $this->image_lib->resize())
+					{
+						echo $this->image_lib->display_errors();
+					}
+
+					array_push($tempArray, $value['file_name']);
+				}
+			}
+
+			if( count($data) == 0 )
+			{
+				return $_FILES[$inName]['name'];
+			}else{
+				return $tempArray;
+			}
 		}
 
 		return '';
@@ -140,7 +262,21 @@ class Artists_detail extends CI_Controller {
 		foreach ($resultDiff as $key => $value) {
 			if (is_file( FCPATH . 'uploads/images/artists/' . $value))
 				unlink(FCPATH . 'uploads/images/artists/' . $value);
+			if (is_file( FCPATH . 'uploads/images/artists/thumb/' . $value))
+				unlink(FCPATH . 'uploads/images/artists/thumb/' . $value);
 		}
 		
+	}
+	/**
+	 * 刪除圖片
+	 * @param  string $inName 資料夾名稱
+	 * @return void result
+	 */
+	private function deleteWorksImagesByName($inName)
+	{
+		if (is_file( FCPATH . 'uploads/images/works/' . $inName))
+			unlink(FCPATH . 'uploads/images/works/' . $inName);
+		if (is_file( FCPATH . 'uploads/images/works/thumb/' . $inName))
+			unlink(FCPATH . 'uploads/images/works/thumb/' . $inName);
 	}
 }

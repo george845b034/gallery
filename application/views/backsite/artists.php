@@ -20,18 +20,29 @@
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th style="width:50%">藝術家名稱</th>
-                                                <th style="width:40%">照片</th>
+                                                <th style="width:30%">藝術家名稱</th>
+                                                <th style="width:30%">照片</th>
+                                                <th style="width:20%">排序</th>
                                                 <th style="width:10%">編輯</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
+                                                $max = count($result) -1;
                                                 foreach ($result as $key => $value) {
+
+                                                    $sortUp = ($key == 0)?'<p>　</p>':'<p><button class="btn btn-default btn-xs shortUp" type="button" name="'. $value['ar_id'] .'"> <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span></button></p>';
+                                                    $sortDown = ($key == $max)?'<p>　</p>':'<p><button class="btn btn-default btn-xs shortDown" name="'. $value['ar_id'] .'"> <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button></p>';
+                                                    $imgSrc = (is_array(getimagesize(base_url() .'uploads/images/artists/'. $value['ar_image'])))?base_url() .'uploads/images/artists/'. $value['ar_image']:base_url() .'uploads/images/artists/'. $value['ar_cv_image'];
+
                                                     echo '
                                                         <tr>
                                                             <td>'. $value['ar_tw_name'] .'</td>
-                                                            <td><img src="'. base_url() .'uploads/images/artists/'. $value['ar_image'] .'" height="80" width="80"></td>
+                                                            <td><img src="'. $imgSrc .'" style="max-height: 160px;"></td>
+                                                            <td>
+                                                                '. $sortUp .'
+                                                                '. $sortDown .'
+                                                            </td>
                                                             <td>
                                                                 <button class="btn btn-default btn-xs edit_dom" type="button" name="'. $value['ar_id'] .'">編輯</button>
                                                                 <button class="btn btn-danger btn-xs remove_dom" name="'. $value['ar_id'] .'">刪除</button>

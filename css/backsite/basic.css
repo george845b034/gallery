@@ -1,0 +1,16 @@
+.imgClass {
+	background: center center;
+	height: 200px;
+	max-height: 200px;
+	overflow: hidden;
+	width: 50%;
+}
+.cursor{
+	cursor: pointer;
+}
+.worksImage{
+	margin-right: 10px;
+	margin-bottom: 10px;
+	max-width: 378px;
+	max-height: 200px;
+}

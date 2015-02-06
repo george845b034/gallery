@@ -83,6 +83,13 @@ $(function () {
 
 
     function previewImage(e) {
+        //判斷是否為pdf檔案
+        if(e.target.accept == 'application/pdf')
+        {
+            $('.pdfDisplay').html(e.target.files[0].name);
+            return;
+        }
+
         var reader = new FileReader();
         var file = $("#" + e.target.id)[0].files[0];
         targetParent = $("#" + e.target.id).parent().parent();
@@ -90,7 +97,7 @@ $(function () {
         reader.onload = loadImage;
     }
 
-    $('#id_image_large, #ar_image, #ar_cv_image').change(previewImage);
+    $('#id_image_large, #ar_image, #e_image, #p_image, #ar_cv_image, #ar_pdf').change(previewImage);
     
     $('.popupImage').on('click', function(){
         
@@ -98,13 +105,12 @@ $(function () {
     	targetDom.show();
     	$('html').removeClass('app');
     	$('body').css({'overflow': 'auto'});
-        
     	$.blockUI({ 
             message: targetDom, 
             css: { 
                 top:  '30px', 
-                left: ($(window).width() - targetDom.width() / 2) /2 + 'px', 
-            	width: targetDom.find('img').width() + 6,
+                left: ($(window).width() - targetDom.find('img')[0].naturalWidth) /2 + 'px', 
+            	width: targetDom.find('img')[0].naturalWidth + 6,
             	cursor: '',
             	position: 'absolute'
             },

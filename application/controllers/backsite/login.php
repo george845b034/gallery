@@ -21,7 +21,8 @@ class Login extends CI_Controller {
 				break;
 			//取得驗証
 			case 2:
-				echo ($this->input->post('captcha') == $this->session->userdata('captcha_info')['code'])?true:false;
+				$captchaInfo = $this->session->userdata('captcha_info');
+				echo ($this->input->post('captcha') == $captchaInfo['code'])?true:false;
 				break;
 			//驗証帳密
 			case 3:
@@ -65,7 +66,7 @@ class Login extends CI_Controller {
 			'max_length' => 5,
 			'png_backgrounds' => array(base_url('/images/captcha/captcha_bg.png')),
 			'fonts' => array(FCPATH.'images/captcha/times_new_yorker.ttf'),
-			'characters' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+			'characters' => '0123456789',
 			'min_font_size' => 22,
 			'max_font_size' => 28,
 			'color' => '#000',

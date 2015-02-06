@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://127.0.0.1:8000/gallery/';
+$config['base_url']	= 'http://10.185.253.35:8000/gallery/';
 
 /*
 |--------------------------------------------------------------------------

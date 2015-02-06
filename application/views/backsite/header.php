@@ -10,6 +10,8 @@
   		<link href="<?php echo base_url();?>css/theme/bootstrap_calendar.css" type="text/css" rel="stylesheet" />
   		<link href="<?php echo base_url();?>css/theme/app.css" type="text/css" rel="stylesheet" />
   		<link href="<?php echo base_url();?>css/plugin/pnotify.custom.min.css" type="text/css" rel="stylesheet" />
+  		<link href="<?php echo base_url();?>css/backsite/basic.css" type="text/css" rel="stylesheet" />
+  		<link href="<?php echo base_url();?>css/backsite/datepicker3.css" type="text/css" rel="stylesheet" />
 
 		<script src="<?php echo base_url();?>js/plugin/jquery-1.11.1.min.js" crossorigin="anonymous"></script>
 		<script src="<?php echo base_url();?>js/plugin/bootstrap.min.js" crossorigin="anonymous"></script>
@@ -26,6 +28,8 @@
 		<script src="<?php echo base_url();?>js/backsite/plugin/jquery.blockUI.js" crossorigin="anonymous"></script>
 		<script src="<?php echo base_url();?>js/backsite/plugin/pnotify.custom.min.js" crossorigin="anonymous"></script>
 		<script src="<?php echo base_url();?>js/backsite/plugin/jquery.form.js" crossorigin="anonymous"></script>
+		<script src="<?php echo base_url();?>js/backsite/plugin/bootstrap-datepicker.js" crossorigin="anonymous"></script>
+		<script src="<?php echo base_url();?>js/backsite/plugin/locales/bootstrap-datepicker.zh-TW.js" crossorigin="anonymous"></script>
 		<!--<script src="<?php echo base_url();?>js/backsite/theme/jquery.flot.min.js" crossorigin="anonymous"></script>
 		<script src="<?php echo base_url();?>js/backsite/theme/jquery.flot.tooltip.min.js" crossorigin="anonymous"></script>
 		<script src="<?php echo base_url();?>js/backsite/theme/jquery.flot.resize.js" crossorigin="anonymous"></script>

@@ -4,9 +4,10 @@
  * @param  string inTitle 標頭
  * @param  string inType  狀態
  * @param  string inContent  內容
+ * @param  string inExec  要執行的
  * @return void resulut
  */
-function notication(inTitle, inType, inContent, inRedirect)
+function notication(inTitle, inType, inContent, inRedirect, inExec)
 {
     var content = inContent || '';
 
@@ -18,8 +19,10 @@ function notication(inTitle, inType, inContent, inRedirect)
         before_close: function(){
             if(inRedirect != undefined)
             {
+                inExec;
                 location.href = inRedirect;
             }else{
+                inExec;
                 location.reload();
             }
         }

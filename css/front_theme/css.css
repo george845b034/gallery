@@ -43,8 +43,8 @@ body {
 .baricons{
 	float:left;
 	list-style: none;
-	margin-top:-15px;
-	padding-left:150px;
+	margin-top:-32px;
+	padding-left:10px;
 	text-align:center;
 	}
 .baricons li {
@@ -260,12 +260,12 @@ body {
 	width:1300px;
 	}
 .bt {
-	margin:-50px 20px 0px 850px;
+	margin:-100px 20px 0px 850px;
 	float:left;
 	}
-.pagination{
+/*.pagination{
 	float:left;
-	}
+	}*/
 .title_con{
 	width:95%;
 	height:auto;
@@ -405,7 +405,7 @@ body {
     position: relative;
     z-index: 10;
     height: 3em;
-    margin-top: -3em;
+    /* margin-top: -3em; */
 	}
 .aboutImg{
 	width:100%;
@@ -418,4 +418,14 @@ body {
 }
 .column-b{
 	width: 300px;
+}
+.enableButton{
+	background-color: #1abc9c;
+}
+
+.worksImage{
+	margin-right: 10px;
+	margin-bottom: 10px;
+	max-width: 378px;
+	max-height: 200px;
 }

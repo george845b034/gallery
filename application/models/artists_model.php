@@ -42,6 +42,7 @@ class artists_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('`gallery`.artists');
+        $this->db->order_by('ar_sort', 'ASC');
         $this->db->order_by('ar_update_time', 'DESC'); 
         $this->db->limit($inLimit, $inPage);
         $query = $this->db->get();
@@ -58,6 +59,7 @@ class artists_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('`gallery`.artists');
+        $this->db->order_by('ar_sort', 'ASC');
         $this->db->order_by('ar_update_time', 'DESC');
         $query = $this->db->get();
         
@@ -78,5 +80,45 @@ class artists_model extends CI_Model
         
         $result = $query->row_array();
         return $result;   
+    }
+
+    public function updateDataSort($inId, $inSymbol)
+    {
+        //找出最大排序值
+        $this->db->select('MAX(ar_sort) AS max');
+        $this->db->from('`gallery`.artists');
+        $query = $this->db->get();
+        
+        $maxResult = $query->row_array();
+
+        //找出目標排序
+        $this->db->select('*');
+        $this->db->from('`gallery`.artists');
+        $this->db->where('ar_id', $inId);
+        $query = $this->db->get();
+        
+        $result = $query->row_array();
+
+        $currentSort = $result['ar_sort'] + $inSymbol;
+
+        if($currentSort < 0)$currentSort = 0;
+        if($currentSort >= $maxResult['max'])$currentSort = $maxResult['max'];
+
+        $data = array('ar_sort' => $result['ar_sort']);
+        $this->db->update('`gallery`.artists', $data, "ar_sort =" . $currentSort);
+
+        $data = array('ar_sort' => $currentSort);
+        $this->db->update('`gallery`.artists', $data, "ar_id =" . $inId);
+
+        if ($this->db->affected_rows() > 0) {
+            
+            $returnArray['status'] = "SUCCESS";
+            $returnArray['msg'] = "Modify Success";
+        } else {
+            $returnArray['status'] = "FAIL";
+            $returnArray['msg'] = "Modify Fail";
+        }
+        
+        return $returnArray;
     }
 }

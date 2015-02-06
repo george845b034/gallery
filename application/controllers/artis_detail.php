@@ -5,21 +5,23 @@ class Artis_detail extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model(array('artists_model'));
-
-		$this->session->set_userdata('language', 'tw');
+		$this->load->model(array('about_model', 'artists_detail_model'));
 	}
 
 	public function index()
 	{
+		$this->about_model->setLanguage($this->input->get('lang', true));
 		$id = $this->input->get('id');
 		if(empty($id))redirect('main');
 
-		$data['artistsData'] = $this->artists_model->getDataById($id);
-		$data['artistsList'] = $this->artists_model->getDataAll();
+		$data['artistsData'] = $this->artists_detail_model->getDataById($id);
+		$data['artistsList'] = $this->artists_detail_model->getDataAll();
+		$data['language'] = $this->about_model->checkLanguage();
+		$data['headerData'] = $this->about_model->getHeaderData();
+		$data['id'] = $id;
 		if(count($data['artistsData']) <= 0)redirect('main');
 
-		$this->load->view('header');
+		$this->load->view('header', $data);
 		$this->load->view('artis_detail', $data);
 		$this->load->view('footer');
 	}

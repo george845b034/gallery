@@ -9,7 +9,7 @@
                     <?php
                         $lenth = (count($publicationsData) < 6)?count($publicationsData):6;
                         for ($i=0; $i < $lenth; $i++) { 
-                            echo '<a href="publications"><img src="uploads/images/publications/'. $publicationsData[$i]['p_image'] .'" data-title="'. $publicationsData[$i]['p_'. $this->session->userdata('language') .'_name'] .'" data-content="'. $publicationsData[$i]['p_'. $this->session->userdata('language') .'_content'] .'"></a>';
+                            echo '<a href="publications"><img src="uploads/images/publications/thumb/'. $publicationsData[$i]['p_image'] .'" data-title="'. $publicationsData[$i]['p_'. $language .'_name'] .'" data-content="'. $publicationsData[$i]['p_'. $language .'_content'] .'"></a>';
                         }
                     ?>
                 </div>
@@ -30,11 +30,11 @@
             </div> 
         </div>
         <div class="con_right publications_content" style="width:30%;">
-            <p><?php echo $publicationsData[0]['p_'. $this->session->userdata('language') .'_name'];?></p>
+            <p><?php echo $publicationsData[0]['p_'. $language .'_name'];?></p>
             <p>
-                <?php echo $publicationsData[0]['p_'. $this->session->userdata('language') .'_content'];?>
+                <?php echo $publicationsData[0]['p_'. $language .'_content'];?>
             </p>
         </div> 
-    </div>
+</div>
    
-    <div class="footer_con"></div>
+<div class="footer_con"></div>
